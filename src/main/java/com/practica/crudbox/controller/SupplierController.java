@@ -1,8 +1,14 @@
 package com.practica.crudbox.controller;
 
+import com.practica.crudbox.dto.ItemDTO;
+import com.practica.crudbox.dto.SupplierDTO;
+import com.practica.crudbox.dto.UserDTO;
 import com.practica.crudbox.exception.SupplierNotFoundException;
 import com.practica.crudbox.model.Supplier;
 import com.practica.crudbox.repository.SupplierRepository;
+import com.practica.crudbox.service.SupplierService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,50 +17,48 @@ import java.util.List;
 @RequestMapping("/api/suppliers")
 public class SupplierController {
 
-    private final SupplierRepository supplierRepository;
 
-    public SupplierController(SupplierRepository supplierRepository) {
-        this.supplierRepository = supplierRepository;
+   private SupplierService supplierService;
+
+    public SupplierController(SupplierService supplierService) {
+        this.supplierService = supplierService;
     }
 
+    @PostMapping
+    public ResponseEntity<SupplierDTO> createSupplier (@RequestBody SupplierDTO supplierDTO){
 
-    @GetMapping("/suppliers")
-    public List<Supplier> all() {
-
-        return supplierRepository.findAll();
-
-    }
-
-    @PostMapping("/suppliers")
-    public Supplier newSupplier(@RequestBody Supplier newSupplier){
-
-        return supplierRepository.save(newSupplier);
+        return new ResponseEntity<>(supplierService.createSupplier(supplierDTO), HttpStatus.CREATED);
 
     }
 
-    @GetMapping("/suppliers/{id}")
-    public Supplier singleItem(@PathVariable Long id){
+    @GetMapping
+    public List <SupplierDTO>getAllSuppliers(){
 
-        return supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException(id));
+        return supplierService.getAllSuppliers();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity <SupplierDTO> getUserById (@PathVariable(name = "id") long id){
+
+
+        return  ResponseEntity.ok(supplierService.getSupplierById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity <SupplierDTO> updateUser (@RequestBody SupplierDTO supplierDTO, @PathVariable(name = "id") long id){
+
+        SupplierDTO supplierResponse = supplierService.updateSupplier(supplierDTO, id);
+        return  new ResponseEntity<>(supplierResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity <String> deleteUser(@PathVariable  (name = "id") long id){
+
+        supplierService.deleteSupplierById(id);
+
+        return new ResponseEntity<>("User entity deleted successfully." , HttpStatus.OK);
 
     }
 
-    @PutMapping("/suppliers/{id}")
-    public Supplier updateUser (@RequestBody Supplier newSupplier, @PathVariable Long id){
 
-        return supplierRepository.findById(id).map(supplier -> {
-            supplier.setName(newSupplier.getName());
-
-            return supplierRepository.save(supplier);
-        }).orElseGet(() -> {
-            newSupplier.setIdSupplier(id);
-            return supplierRepository.save(newSupplier);
-        });
-    }
-    @DeleteMapping("/suppliers/{id}")
-    public void deleteEmployee(@PathVariable Long id){
-
-        supplierRepository.deleteById(id);
-
-    }
 }

@@ -1,5 +1,6 @@
 package com.practica.crudbox.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.practica.crudbox.model.Item;
 import lombok.Data;
 
@@ -12,6 +13,8 @@ public class SupplierDTO {
     private String name;
 
     private String country;
+
+
 
 
 }

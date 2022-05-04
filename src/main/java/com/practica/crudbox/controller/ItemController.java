@@ -1,10 +1,13 @@
 package com.practica.crudbox.controller;
 
 
+import com.practica.crudbox.dto.ItemDTO;
+import com.practica.crudbox.dto.UserDTO;
 import com.practica.crudbox.exception.ItemNotFoundException;
 import com.practica.crudbox.model.Item;
-import com.practica.crudbox.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.practica.crudbox.service.ItemService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,54 +17,46 @@ import java.util.List;
 public class ItemController {
 
 
-    private final ItemRepository itemRepository;
+    private ItemService itemService;
 
-    public ItemController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public ItemController(ItemService itemRepository) {
+        this.itemService = itemRepository;
     }
 
-    @GetMapping("/items")
-    public List<Item> listAll() {
 
-        return itemRepository.findAll();
+    @PostMapping
+    public ResponseEntity<ItemDTO> createItems (@RequestBody ItemDTO itemDTO){
 
-    }
-
-    @PostMapping("/items")
-    public Item newItem(@RequestBody Item newItem){
-
-        return itemRepository.save(newItem);
+        return new ResponseEntity<>(itemService.createItem(itemDTO), HttpStatus.CREATED);
 
     }
 
-    @GetMapping("/items/{id}")
-    public Item singleItem(@PathVariable Long id){
+    @GetMapping
+    public List <ItemDTO>getAllItems(){
 
-        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
-
+        return itemService.getAllItems();
     }
 
-    @PutMapping("/items/{id}")
-    public Item updateItems (@RequestBody Item newItem, @PathVariable Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity <ItemDTO> getUserById (@PathVariable(name = "id") long id){
 
-        return itemRepository.findById(id).map(item -> {
-            item.setDescription(newItem.getDescription());
-            item.setPrice(newItem.getPrice());
-            item.setState(newItem.getState());
-            item.setDiscounts(newItem.getDiscounts());
-            item.setSuppliers(newItem.getSuppliers());
-            item.setCreationDate(newItem.getCreationDate());
-            item.setCreator(newItem.getCreator());
-            return itemRepository.save(item);
-        }).orElseGet(() -> {
-            newItem.setIdItem(id);
-            return itemRepository.save(newItem);
-        });
+
+        return  ResponseEntity.ok(itemService.getItemsById(id));
     }
-    @DeleteMapping("/items/{id}")
-    public void deleteItem(@PathVariable Long id){
 
-        itemRepository.deleteById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity <ItemDTO> updateUser (@RequestBody ItemDTO itemDTO, @PathVariable(name = "id") long id){
+
+        ItemDTO itemResponse = itemService.updateItems(itemDTO, id);
+        return  new ResponseEntity<>(itemResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity <String> deleteUser(@PathVariable  (name = "id") long id){
+
+        itemService.deleteItemById(id);
+
+        return new ResponseEntity<>("Item entity deleted successfully." , HttpStatus.OK);
 
     }
 

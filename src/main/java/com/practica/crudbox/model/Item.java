@@ -1,6 +1,7 @@
 package com.practica.crudbox.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,15 +10,16 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Data
+@Table(name = "items")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column( name = "iditem")
     private Long idItem;
 
     private String description;

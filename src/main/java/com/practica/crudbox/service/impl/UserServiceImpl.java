@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl  implements UserService {
 
     private UserRepository userRepository;
-
     private ModelMapper mapper;
 
     public UserServiceImpl(UserRepository userRepository, ModelMapper mapper) {
