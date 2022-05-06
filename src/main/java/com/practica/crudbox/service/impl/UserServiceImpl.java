@@ -6,6 +6,9 @@ import com.practica.crudbox.model.User;
 import com.practica.crudbox.repository.UserRepository;
 import com.practica.crudbox.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +20,8 @@ public class UserServiceImpl  implements UserService {
 
     private UserRepository userRepository;
     private ModelMapper mapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, ModelMapper mapper) {
         this.userRepository = userRepository;
@@ -28,6 +33,10 @@ public class UserServiceImpl  implements UserService {
 
         //conversion DTO to entity
         User user = mapToEntity(userDTO);
+
+        user.setUsername(userDTO.getUserName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
         User newUser = userRepository.save(user);
 
         //consersion ENTITY to DTO
@@ -55,11 +64,16 @@ public class UserServiceImpl  implements UserService {
     public UserDTO updateUser(UserDTO userDTO, long id) {
 
         User user = userRepository.findById(id).orElseThrow(()-> new  ResourceNotFoundException("User", "id", id));
-        user.setName(userDTO.getName());
+        user.setUsername(userDTO.getUserName());
 
         User updatedUser = userRepository.save(user);
 
         return mapToDTO(updatedUser) ;
+    }
+
+    @Override
+    public UserDTO findUserByName(String userName) {
+        return mapToDTO(userRepository.findByUsername(userName).orElse(null));
     }
 
     @Override

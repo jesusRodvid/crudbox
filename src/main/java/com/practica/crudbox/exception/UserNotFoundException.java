@@ -2,9 +2,9 @@ package com.practica.crudbox.exception;
 
 public class UserNotFoundException extends  RuntimeException{
 
-    public UserNotFoundException(Long id) {
+    public UserNotFoundException(String username) {
 
-    super("Couldn't find user " + id);
+    super("Couldn't find user " + username);
 
     }
 }

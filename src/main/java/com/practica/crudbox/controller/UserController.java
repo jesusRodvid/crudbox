@@ -1,12 +1,18 @@
 package com.practica.crudbox.controller;
 
 import com.practica.crudbox.dto.UserDTO;
+import com.practica.crudbox.model.User;
 import com.practica.crudbox.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,7 +26,7 @@ public class UserController{
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/crearuser")
     public ResponseEntity <UserDTO> createUser (@RequestBody UserDTO userDTO){
 
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
@@ -54,6 +60,30 @@ public class UserController{
 
         return new ResponseEntity<>("User entity deleted successfully." , HttpStatus.OK);
 
+    }
+
+    @PostMapping
+    public ResponseEntity <?> register (@RequestBody @Valid UserDTO userDTO){
+
+        if (userService.findUserByName(userDTO.getUserName())!=null){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        userService.createUser(userDTO);
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity <?> login (HttpServletRequest request){
+
+        Principal principal = request.getUserPrincipal();
+        if ( (principal == null || principal.getName() == null)){
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        UserDTO user = userService.findUserByName(principal.getName());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 }
