@@ -28,7 +28,6 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private UserRepository userService;
 
 
@@ -53,7 +52,7 @@ public class AuthController {
     @PostMapping
     private ResponseEntity <?> registerUser (@RequestBody SignUpDto signUpDto){
 
-        if(userService.existByUsername(signUpDto.getUsername())){
+        if(userService.existsByUsername(signUpDto.getUsername())){
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
         User user = new User();

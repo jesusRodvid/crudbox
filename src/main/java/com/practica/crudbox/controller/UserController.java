@@ -62,28 +62,6 @@ public class UserController{
 
     }
 
-    @PostMapping
-    public ResponseEntity <?> register (@RequestBody @Valid UserDTO userDTO){
 
-        if (userService.findUserByName(userDTO.getUserName())!=null){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        userService.createUser(userDTO);
-        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
-
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity <?> login (HttpServletRequest request){
-
-        Principal principal = request.getUserPrincipal();
-        if ( (principal == null || principal.getName() == null)){
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        UserDTO user = userService.findUserByName(principal.getName());
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
 }
