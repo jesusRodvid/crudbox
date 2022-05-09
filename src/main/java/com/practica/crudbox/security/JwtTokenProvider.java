@@ -4,16 +4,17 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-
+@Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt-secret}")
+    @Value("${security.jwt.token.secret-key:secret-key}")
     private String jwtSecret;
-    @Value("${app.jwt-expiration-milliseconds}")
-    private int jwtExpirationInMs;
+    @Value("${security.jwt.token.expire-length:3600000}")
+    private Long jwtExpirationInMs;
 
     // generate token
     public String generateToken(Authentication authentication){
