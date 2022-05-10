@@ -34,7 +34,7 @@ public class UserServiceImpl  implements UserService {
         //conversion DTO to entity
         User user = mapToEntity(userDTO);
 
-        user.setUsername(userDTO.getUserName());
+        user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         User newUser = userRepository.save(user);
@@ -64,7 +64,7 @@ public class UserServiceImpl  implements UserService {
     public UserDTO updateUser(UserDTO userDTO, long id) {
 
         User user = userRepository.findById(id).orElseThrow(()-> new  ResourceNotFoundException("User", "id", id));
-        user.setUsername(userDTO.getUserName());
+        user.setUsername(userDTO.getUsername());
 
         User updatedUser = userRepository.save(user);
 

@@ -22,12 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
     private UserRepository userService;
 
 
@@ -49,10 +50,10 @@ public class AuthController {
         return ResponseEntity.ok(new JWTAuthResponse(token));
     }
 
-    @PostMapping
+    @PostMapping("/signup")
     private ResponseEntity <?> registerUser (@RequestBody SignUpDto signUpDto){
 
-        if(userService.existsByUsername(signUpDto.getUsername())){
+       if(userService.existsByUsername(signUpDto.getUsername())){
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
         User user = new User();
