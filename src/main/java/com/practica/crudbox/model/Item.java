@@ -31,7 +31,12 @@ public class Item {
     @ManyToMany
     private Set <Discount> discounts;
 
-    @ManyToMany
+    @ManyToMany(
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
     @JoinTable(
             name = "items_suppliers",
             joinColumns =  @JoinColumn (name = "iditem"),

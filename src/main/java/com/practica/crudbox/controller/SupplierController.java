@@ -1,11 +1,6 @@
 package com.practica.crudbox.controller;
 
-import com.practica.crudbox.dto.ItemDTO;
 import com.practica.crudbox.dto.SupplierDTO;
-import com.practica.crudbox.dto.UserDTO;
-import com.practica.crudbox.exception.SupplierNotFoundException;
-import com.practica.crudbox.model.Supplier;
-import com.practica.crudbox.repository.SupplierRepository;
 import com.practica.crudbox.service.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/suppliers")
 public class SupplierController {
 
@@ -24,35 +20,35 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
-    @PostMapping
+    @PostMapping("/createSupplier")
     public ResponseEntity<SupplierDTO> createSupplier (@RequestBody SupplierDTO supplierDTO){
 
         return new ResponseEntity<>(supplierService.createSupplier(supplierDTO), HttpStatus.CREATED);
 
     }
 
-    @GetMapping
+    @GetMapping("/getAllSuppliers")
     public List <SupplierDTO>getAllSuppliers(){
 
         return supplierService.getAllSuppliers();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity <SupplierDTO> getUserById (@PathVariable(name = "id") long id){
+    @GetMapping("/getSupplierById/{id}")
+    public ResponseEntity <SupplierDTO> getSupplierById(@PathVariable(name = "id") long id){
 
 
         return  ResponseEntity.ok(supplierService.getSupplierById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity <SupplierDTO> updateUser (@RequestBody SupplierDTO supplierDTO, @PathVariable(name = "id") long id){
+    @PutMapping("/updateSupplier/{id}")
+    public ResponseEntity <SupplierDTO> updateSupplier(@RequestBody SupplierDTO supplierDTO, @PathVariable(name = "id") long id){
 
         SupplierDTO supplierResponse = supplierService.updateSupplier(supplierDTO, id);
         return  new ResponseEntity<>(supplierResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity <String> deleteUser(@PathVariable  (name = "id") long id){
+    @DeleteMapping("/deleteSupplier/{id}")
+    public ResponseEntity <String> deleteSupplier(@PathVariable  (name = "id") long id){
 
         supplierService.deleteSupplierById(id);
 
