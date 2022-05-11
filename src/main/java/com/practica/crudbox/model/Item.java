@@ -33,7 +33,7 @@ public class Item {
 
     @ManyToMany(
             cascade = {
-                    CascadeType.PERSIST,
+                    //CascadeType.PERSIST,
                     CascadeType.MERGE
             }
     )
