@@ -19,7 +19,7 @@ public class User {
 
 
     @Basic
-    @Column
+    @Column(name="username")
     private String name;
 
     public User() {
