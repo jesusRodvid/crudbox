@@ -1,1 +1,0 @@
-insert into users values ("nombre nombre nombre");
